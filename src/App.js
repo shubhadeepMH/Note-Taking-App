@@ -1,32 +1,59 @@
-import React, { useState } from 'react'
-import MakeNote from './components/MakeNote'
-import Navbar from './components/Navbar'
-import Note from "./components/Note"
-import Challange from './components/Challange'
+import React from 'react'
+import SignUp from './SignUp'
 
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from 'react'
+import TaskBar from './TaskBar'
+import Popup from './Popup'
+import Login from './LogIn'
 
 
 export default function App() {
-  const [addNote, setAddNote] = useState([])
-
-  const displayNote = (Note) => {
-
-    setAddNote((prevData) => {
-      return [...prevData, Note]
-    })
-
+  const [datas, addData] = useState([])
+  const [reDirect, setReDirect] = useState(true)
+  const [iscorrectInfo, setIsCorrectInfo] = useState(false)
+  const dataStorage = (user) => {
+    if(user.userName.length==0 || user.emailId.length==0 || user.passWord.length==0 ){
+     
+      alert(" Please fill all the information")
+    }else{
+      
+        
+      addData((prevData) => {
+        // setReDirect(true)
+      
+             return [...prevData,user]
+      }
+      )
+      
+    }
+  
   }
-  const Delete = (id) => {
-    // console.log(id);
-    setAddNote((prevData) =>
-      // console.log(prevData)
-      prevData.filter((data, index) => {
+  const checkinfo = (userverify) => {
 
-        return index != id
+    if(datas.length==0){
+      alert("Sign Up First!")
+    }
+    else if(userverify.userName.length==0||userverify.passWord.length==0){
+        alert("Enter all details")
+    }
+    else{
+      for (let data in datas) {
+      
 
-      })
-    )
+      
+       if(  datas[data].userName == userverify.userName && datas[data].passWord == userverify.passWord ){
+         // console.log(datas[data].userName, userverify.userName);
+         setIsCorrectInfo(true)
+         
+         
+       }
+         
+
+      }
+  
+    }
+   
 
 
   }
@@ -34,34 +61,19 @@ export default function App() {
 
   return (
     <div>
-      <Navbar className='mb-[50px]' />
-      <MakeNote passNote={displayNote} />
-
-      <div className='grid grid-cols-4 mx-[6px]'>
-        {
-          addNote.map((element, index) => {
-
-            return (
-
-
-              <Note title={element.title} Delete={Delete} key={index} content={element.content} id={index} />
-
-
-            )
-          })
-        }
-
-
-      </div>
-
-      {/* <div className=' w-[230px] text-center mx-auto mt-[200px]'>
-      <Challange/>
- </div> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path= '/Task' element={<TaskBar />} />
+          <Route path='/' element={<SignUp dataStorage={dataStorage} reDirect={reDirect} />} />
+          <Route path='/login' element={<Login checkinformation={checkinfo} reDirect={iscorrectInfo} />} />
 
 
 
+        </Routes>
 
 
+
+      </BrowserRouter>
 
 
 
